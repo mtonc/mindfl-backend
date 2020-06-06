@@ -1,0 +1,12 @@
+{
+  "name": "mindfl-backend",
+  "version": "0.1.0",
+  "description": "Mood tracking app",
+  "main": "index.js",
+  "author": "mtonc",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "firebase-admin": "^8.12.1"
+  }
+}
