@@ -1,0 +1,21 @@
+version: "3.8"
+services: 
+  app:
+    container_name: mindfl
+    restart: always
+    build: .
+    ports:
+      - "8000:8000"
+    links:
+      - mongo
+    env_file: ./config/.env
+    depends_on: 
+      - mongo
+  mongo:
+    container_name: mongo
+    build:
+      context: .
+      dockerfile: Dockerfile-mongo
+    ports: 
+      - "21017:21017"
+    env_file: ./config/.env

@@ -1,11 +1,18 @@
-FROM node:12
+#Step 1: Builder
+FROM node:12.18-alpine3.12 as builder
+WORKDIR /home/node/app
+COPY . .
+RUN npm install && npm run build
+################################################################################
+#Step 2: Runner
+FROM node:12.18.0
+ENV NODE_ENV=production
+WORKDIR /home/node/app 
+
+COPY package.json ./
+RUN npm install &&\
+	npm cache clean --force
+COPY --from=builder /home/node/app/dist ./dist
+COPY --from=builder /home/node/app/config ./config
 EXPOSE 8000
-RUN mkdir /app
-WORKDIR /app
-VOLUME /app
-COPY package.json /app
-COPY yarn.lock /app
-RUN yarn install
-COPY ./src /app/src
-COPY ./config /app/config
-RUN yarn build
+CMD npm run start
