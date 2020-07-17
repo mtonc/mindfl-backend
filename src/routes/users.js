@@ -1,9 +1,11 @@
 import express from "express"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import User from '../lib/User'
+import User from '../models/User'
 import bodyParser from 'body-parser'
 import {check, validationResult} from 'express-validator'
+
+import { auth } from '../middleware/auth'
 
 const router = express.Router()
 
@@ -27,7 +29,6 @@ router.post(
 			.isAscii().withMessage("Password contains invalid characters")
 	],
 	async (req, res) => {
-		console.log(req.body);
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
 			res.status(400).json({
@@ -146,6 +147,20 @@ router.post(
 			})
 		}
 	} 
+)
+
+router.get(
+	'/self',
+	auth,
+	async (req, res) => {
+		try {
+			const user = await User.findById(req.user.id)
+			return res.json(user)
+		} catch (e) {
+			console.error(e)
+			res.send({ message: 'Error fetching user' })
+		} 
+	}
 )
 
 export default router
